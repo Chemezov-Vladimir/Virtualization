@@ -8,8 +8,8 @@
 Решение
 -
 Команда Docker:
-`docker run --name my_postgres -v /hw/postgres-bu:/postgres-bu -v 
-/hw/postgres-db:/postgres-db -p 5432:5432 -e POSTGRES_PASSWORD=12345678 -itd
+`docker run --name my_postgres -v ~/hw/postgres-bu:/postgres-bu -v 
+~/hw/postgres-db:/postgres-db -p 5432:5432 -e POSTGRES_PASSWORD=12345678 -itd
 postgres:12-alpine`
 
 Задача 2
