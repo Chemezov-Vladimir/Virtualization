@@ -95,6 +95,7 @@ Terraform можно будет заменить на Сloud Formation.
 Решение
 -
 
-Скачал бинарный файл старой версии и установил его в `/usr/local.bin`
+Скачал бинарный файл старой версии и установил его в `/usr/local/bin`, назвав 
+`terraform_old`. Вывод запроса `--version` двух версий:
 
-![](img/Screenshot_2.png)
+![](img/Screenshot_3.png)

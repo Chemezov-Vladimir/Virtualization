@@ -1,0 +1,49 @@
+stages:
+  - Build
+  - Upload
+  - Docker
+
+before_script:
+  - export GOPATH=${CI_PROJECT_DIR}/.cache
+
+Run build:
+  image: golang:1.17
+  stage: Build
+  script:
+    - CGO_ENABLED=0 GOOS=linux GOARCH=amd64 make build
+  artifacts:
+    expire_in: 2 h
+    paths:
+      - .bin
+
+Upload to Registry:
+  image: curlimages/curl:latest
+  stage: Upload
+  rules:
+    - if: $CI_COMMIT_TAG
+  before_script:
+    - export VERSION=$CI_COMMIT_TAG
+    - export RELEASE_DIR=$CI_PROJECT_DIR/release
+    - mkdir -p $RELEASE_DIR
+  script:
+    - echo "Сборка релиза для версии ${VERSION}"
+    - export ARCHIVE_NAME=${CI_PROJECT_NAME}.tar.gz
+    - cp $CI_PROJECT_DIR/.bin/* $RELEASE_DIR
+    - tar -czvf ${ARCHIVE_NAME} -C $RELEASE_DIR .
+    - echo "Релизный архив для версии $ARCHIVE_NAME успешно собран"
+    - 'curl --header "JOB-TOKEN: $CI_JOB_TOKEN" --upload-file $CI_PROJECT_DIR/$ARCHIVE_NAME ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/generic/{$CI_PROJECT_NAME}/${VERSION}/$ARCHIVE_NAME'
+
+Build Image:
+  image: docker:20.10.1
+  stage: Docker
+  services:
+    - docker:20.10.1-dind
+  variables:
+    IMAGE_TAG: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  before_script:
+    - echo -n $CI_JOB_TOKEN | docker login -u $CI_REGISTRY_USER --password-stdin $CI_REGISTRY
+  script:
+    - docker build -t $IMAGE_TAG .
+    - docker push $IMAGE_TAG
+  only:
+    - branches
