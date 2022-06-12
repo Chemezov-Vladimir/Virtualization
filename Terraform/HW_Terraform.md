@@ -107,4 +107,4 @@ new stage`
 
 ### Ответы на вопросы
 1. AMI - это образ для AWS. Соответственно, создать его можно с помощью CloudFormation.
-2. [Репозиторий]() с исходной конфигурацией терраформа.
+2. [Репозиторий](https://github.com/Chemezov-Vladimir/Virtualization/tree/main/Terraform/terraform_src) с исходной конфигурацией терраформа.
